@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
-project(app LANGUAGES CXX)
+project(langagent LANGUAGES CXX)
 
 find_package(CURL REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include <stdexcept>
 #include <nlohmann/json.hpp>
 #include "LLM.hpp"
@@ -14,22 +15,27 @@ LLM::LLM(const std::string& base_url, const std::string& model_name, const std::
     }
 LLM::~LLM() {}
 
-std::string LLM::get_response(const std::string& input) {
-    nlohmann::json json_body = {
-        {"model", model},
-        {"messages", {
-            {
-                {"role", "system"},
-                {"content", system_prompt}
-            },
-            {
-                {"role", "user"},
-                {"content", input}
-            }
-        }},
-        {"stream", stream},
-        {"options", {{"temperature", temperature}}}
-    };
+std::string LLM::get_response(const std::vector<std::vector<std::string>> messages) {
+    // nlohmann::json json_body = {
+    //     {"model", model},
+    //     {"messages", {
+    //         {
+    //             {"role", "system"},
+    //             {"content", system_prompt}
+    //         },
+    //         {
+    //             {"role", "user"},
+    //             {"content", input}
+    //         }
+    //     }},
+    //     {"stream", stream},
+    //     {"options", {{"temperature", temperature}}}
+    // };
+    nlohmann::json json_body;
+    json_body["model"] = model;
+    json_body["stream"] = stream;
+    json_body["options"]["temperature"] = temperature;
+    json_body["messages"] = messages;
 
     try {
         std::string response = client.postJson("/api/chat", json_body);
