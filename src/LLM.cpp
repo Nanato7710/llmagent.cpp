@@ -15,27 +15,19 @@ LLM::LLM(const std::string& base_url, const std::string& model_name, const std::
     }
 LLM::~LLM() {}
 
-std::string LLM::get_response(const std::vector<std::vector<std::string>> messages) {
-    // nlohmann::json json_body = {
-    //     {"model", model},
-    //     {"messages", {
-    //         {
-    //             {"role", "system"},
-    //             {"content", system_prompt}
-    //         },
-    //         {
-    //             {"role", "user"},
-    //             {"content", input}
-    //         }
-    //     }},
-    //     {"stream", stream},
-    //     {"options", {{"temperature", temperature}}}
-    // };
+std::string LLM::get_response(const nlohmann::json& messages) {
     nlohmann::json json_body;
     json_body["model"] = model;
     json_body["stream"] = stream;
     json_body["options"]["temperature"] = temperature;
     json_body["messages"] = messages;
+
+    if (messages.empty() || messages[0]["role"] != "system" || messages[0]["content"] != system_prompt) {
+        json_body["messages"].insert(json_body["messages"].begin(),{{
+            {"role", "system"},
+            {"content", system_prompt}
+        }});
+    }
 
     try {
         std::string response = client.postJson("/api/chat", json_body);
