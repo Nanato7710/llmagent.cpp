@@ -8,8 +8,9 @@ class CurlClient {
     CurlClient(const std::string& base_url);
     ~CurlClient();
 
-    std::string postJson(const std::string& endpoint, const nlohmann::json& json_body);
+    std::string post_json(const std::string& endpoint, const nlohmann::json& json_body);
+    void post_json_stream(const std::string& endpoint, const nlohmann::json& json_body, const std::function<void(const std::string&)>& on_data);
 
     private:
-    std::string baseUrl;
+    std::string base_url;
 };
